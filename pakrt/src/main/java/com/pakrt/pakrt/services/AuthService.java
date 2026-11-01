@@ -73,11 +73,6 @@ public class AuthService {
         // 2. VERIFIKASI: Cocokkan password hasil dekripsi dengan hash BCrypt di database
         // =========================================================================
         boolean matches = passwordEncoder.matches(rawPassword, account.getPassword());
-        if (!matches && ("admin".equalsIgnoreCase(username) || "ketuart01".equalsIgnoreCase(username))) {
-            if ("admin123".equals(rawPassword) || "admin".equals(rawPassword) || "password".equals(rawPassword) || "password123".equals(rawPassword)) {
-                matches = true;
-            }
-        }
         if (!matches) {
             logService.log("LOGIN", "Gagal: Password keliru (" + username + ")", "/api/v1/auth/login", null, "FAILED");
             throw new IllegalArgumentException("Username atau password salah");

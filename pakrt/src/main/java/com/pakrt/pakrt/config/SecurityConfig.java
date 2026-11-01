@@ -44,11 +44,9 @@ public class SecurityConfig {
 
                 // Mengatur izin akses endpoint
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoint publik (Login & Registrasi Akun)
-                        .requestMatchers(HttpMethod.POST, "/auth/token", "/api/v1/auth/**", "/api/v1/account/create").permitAll()
-                        // Endpoint publik Menu & Inisialisasi
-                        .requestMatchers("/api/v1/menu/**", "/api/v1/menu-detail/**").permitAll()
-                        // SEMUA endpoint data (/api/v1/account/list, /api/v1/warga/**, dll) WAJIB Bearer Token
+                        // Endpoint publik (Hanya Login & Otentikasi Token)
+                        .requestMatchers(HttpMethod.POST, "/auth/token", "/api/v1/auth/**").permitAll()
+                        // SEMUA endpoint data (/api/v1/account/**, /api/v1/menu/**, /api/v1/warga/**, dll) WAJIB Bearer Token
                         .anyRequest().authenticated()
                 )
                 // Format response error 401 Unauthorized JSON standar Nexus
@@ -71,7 +69,7 @@ public class SecurityConfig {
 
         // Mendaftarkan domain/port yang diizinkan mengakses API (Frontend Web & Mobile)
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",     // Port Vite React saat port 5173 sedang digunakan
+                "http://localhost:5173",     // Port Vite React
                 "http://localhost:8081",     // Origin standar aplikasi Capacitor Android
                 "https://app.pakrt.my.id"    // Domain production PWA nantinya
         ));
@@ -89,4 +87,3 @@ public class SecurityConfig {
         return source;
     }
 }
-

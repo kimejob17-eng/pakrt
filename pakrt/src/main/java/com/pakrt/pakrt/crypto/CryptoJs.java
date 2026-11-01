@@ -13,16 +13,22 @@ import java.util.Base64;
 
 @Component
 public class CryptoJs {
-    private static String SECRET_KEY = "L4p0rP4kR7";
+    private static String SECRET_KEY;
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
-    @Value("${app.security.secret-key:L4p0rP4kR7}")
+    @Value("${app.security.secret-key}")
     public void setSecretKey(String secretKey) {
-        CryptoJs.SECRET_KEY = secretKey;
+        if (secretKey == null || secretKey.trim().isEmpty()) {
+            throw new IllegalStateException("Konfigurasi app.security.secret-key (ENCRYPTION_KEY) wajib disediakan dan tidak boleh kosong!");
+        }
+        CryptoJs.SECRET_KEY = secretKey.trim();
     }
 
     public static String EncryptorAES(String str) {
         if (str == null) return null;
+        if (SECRET_KEY == null || SECRET_KEY.trim().isEmpty()) {
+            throw new IllegalStateException("Kunci enkripsi AES (ENCRYPTION_KEY) belum diinisialisasi");
+        }
         try {
             byte[] keyAndIv = generateKeyAndIV(SECRET_KEY, 32, 16);
             byte[] key = Arrays.copyOfRange(keyAndIv, 0, 32);
@@ -42,6 +48,9 @@ public class CryptoJs {
 
     public static String DecryptorAES(String str) {
         if (str == null) return null;
+        if (SECRET_KEY == null || SECRET_KEY.trim().isEmpty()) {
+            throw new IllegalStateException("Kunci enkripsi AES (ENCRYPTION_KEY) belum diinisialisasi");
+        }
         try {
             byte[] keyAndIv = generateKeyAndIV(SECRET_KEY, 32, 16);
             byte[] key = Arrays.copyOfRange(keyAndIv, 0, 32);
@@ -84,5 +93,3 @@ public class CryptoJs {
         return result;
     }
 }
-
-

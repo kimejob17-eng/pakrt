@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${app.jwt.secret-key:Kunc1R4h4s1a}")
+    @Value("${app.jwt.secret-key}")
     private String secretKey;
 
     @Value("${app.jwt.expiration-ms:600000}")
@@ -29,6 +29,9 @@ public class JwtService {
      * Menjamin panjang kunci selalu 256-bit berstandar kriptografi teraman.
      */
     private SecretKey getSigningKey() {
+        if (secretKey == null || secretKey.trim().isEmpty()) {
+            throw new IllegalStateException("JWT Secret Key (JWT_SECRET / app.jwt.secret-key) wajib dikonfigurasi dan tidak boleh kosong!");
+        }
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] keyBytes = digest.digest(secretKey.getBytes(StandardCharsets.UTF_8));
